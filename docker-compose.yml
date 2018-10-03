@@ -1,8 +1,44 @@
 version: '3'
 services:
-  discounery:
-    ports:
-      - "8761:8761"
-  config-server:
-  client:
+    discovery:
+        container_name: discovery
+        build:
+            context: ./discovery
+            dockerfile: Dockerfile
+        ports:
+          - ${DISCOVERY_PORT}:${DISCOVERY_PORT}
+        networks:
+          - configs-network
+        environment:
+          - DISCOVERY_PORT=${DISCOVERY_PORT}
+    config-server:
+        container_name: config-server
+        build:
+            context: ./config-server
+            dockerfile: Dockerfile
+        ports:
+            - ${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}
+        networks:
+            - configs-network
+        environment:
+            - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+            - discovery-service=discovery
+            - DISCOVERY_PORT=${DISCOVERY_PORT}
+        depends_on:
+            - discovery
+
+#    config-client:
+#        container_name: config-client
+#        build:
+#            context: ./config-client
+#            dockerfile: Dockerfile
+#        ports:
+#            - 8081:8081
+#        networks:
+#            - configs-network
+#        depends_on:
+#            - discovery
+#            - config-server
 networks:
+    configs-network:
+        driver: bridge
