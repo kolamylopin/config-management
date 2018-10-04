@@ -22,23 +22,27 @@ services:
             - configs-network
         environment:
             - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
-            - discovery-service=discovery
+            - DISCOVERY_SERVICE=discovery
             - DISCOVERY_PORT=${DISCOVERY_PORT}
         depends_on:
             - discovery
 
-#    config-client:
-#        container_name: config-client
-#        build:
-#            context: ./config-client
-#            dockerfile: Dockerfile
-#        ports:
-#            - 8081:8081
-#        networks:
-#            - configs-network
-#        depends_on:
-#            - discovery
-#            - config-server
+    config-client:
+        container_name: config-client
+        build:
+            context: ./config-client
+            dockerfile: Dockerfile
+        ports:
+            - ${CONFIG_CLIENT_PORT}:${CONFIG_CLIENT_PORT}
+        networks:
+            - configs-network
+        environment:
+            - CONFIG_CLIENT_PORT=${CONFIG_CLIENT_PORT}
+            - DISCOVERY_SERVICE=discovery
+            - DISCOVERY_PORT=${DISCOVERY_PORT}
+        depends_on:
+            - discovery
+            - config-server
 networks:
     configs-network:
         driver: bridge
