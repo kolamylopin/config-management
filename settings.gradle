@@ -1,0 +1,3 @@
+includeBuild 'discovery'
+includeBuild 'config-server'
+includeBuild 'config-client'

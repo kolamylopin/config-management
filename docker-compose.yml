@@ -17,7 +17,7 @@ services:
             context: ./config-server
             dockerfile: Dockerfile
         ports:
-            - ${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}
+           - ${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}
         networks:
             - configs-network
         environment:
@@ -26,7 +26,7 @@ services:
             - DISCOVERY_PORT=${DISCOVERY_PORT}
         depends_on:
             - discovery
-
+        command: ["/wait.sh", "discovery:${DISCOVERY_PORT}", "-t", "0", "--", "java", "-jar", "app.jar"]
     config-client:
         container_name: config-client
         build:
@@ -43,6 +43,7 @@ services:
         depends_on:
             - discovery
             - config-server
+        command: ["/wait.sh", "discovery:${DISCOVERY_PORT}/eureka/apps/config.server", "java -jar app.jar"]
 networks:
     configs-network:
         driver: bridge
