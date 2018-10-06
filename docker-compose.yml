@@ -26,7 +26,7 @@ services:
             - DISCOVERY_PORT=${DISCOVERY_PORT}
         depends_on:
             - discovery
-        command: ["/wait.sh", "discovery:${DISCOVERY_PORT}", "-t", "0", "--", "java", "-jar", "app.jar"]
+        command: ["/wait.sh", "discovery:${DISCOVERY_PORT}/eureka/apps/", "java -jar app.jar"]
     config-client:
         container_name: config-client
         build:
