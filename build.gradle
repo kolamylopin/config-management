@@ -1,22 +1,21 @@
 apply plugin: 'java'
 
-task cleanDependencies {
+task clean (overwrite: true) {
      dependsOn gradle.includedBuilds*.task(':clean')
 }
 
 task buildDependencies {
-     dependsOn gradle.includedBuilds*.task(':build')
+    dependsOn gradle.includedBuilds*.task(':build')
 }
 
-task cleanBuild (dependsOn: [cleanDependencies, buildDependencies]) {
-}
-
-task start (type: Exec) {
+task buildImages(type: Exec) {
     executable 'docker-compose'
-    args 'up', 'discovery'
+    args 'build'
 }
 
-task startClean(dependsOn: [cleanBuild, start]) {
+task run (type: Exec) {
+    executable 'docker-compose'
+    args 'up'
 }
 
 task stop (type: Exec) {
