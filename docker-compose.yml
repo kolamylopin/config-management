@@ -24,9 +24,11 @@ services:
             - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
             - DISCOVERY_SERVICE=discovery
             - DISCOVERY_PORT=${DISCOVERY_PORT}
+        volumes:
+              - ./scripts:/scripts
         depends_on:
             - discovery
-        command: ["/wait.sh", "discovery:${DISCOVERY_PORT}/eureka/apps/", "java -jar app.jar"]
+        command: ["/scripts/wait.sh", "discovery:${DISCOVERY_PORT}/eureka/apps/", "java -jar app.jar"]
     config-client:
         container_name: config-client
         build:
@@ -40,10 +42,12 @@ services:
             - CONFIG_CLIENT_PORT=${CONFIG_CLIENT_PORT}
             - DISCOVERY_SERVICE=discovery
             - DISCOVERY_PORT=${DISCOVERY_PORT}
+        volumes:
+            - ./scripts:/scripts
         depends_on:
             - discovery
             - config-server
-        command: ["/wait.sh", "discovery:${DISCOVERY_PORT}/eureka/apps/config.server", "java -jar app.jar"]
+        command: ["/scripts/wait.sh", "discovery:${DISCOVERY_PORT}/eureka/apps/config.server", "java -jar app.jar"]
 networks:
     configs-network:
         driver: bridge
